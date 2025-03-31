@@ -10,7 +10,7 @@ class Conexao:
         self.porta = porta
         self.conexao = None
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.nome_adversario = None  # Nome do outro jogador
+        self.nome_adversario = None
 
         if self.servidor:
             self.iniciar_servidor()
@@ -51,9 +51,10 @@ class Conexao:
         except Exception as erro:
             print(f"[ERRO] Falha ao conectar.")
             print(f"ERRO: {erro}")
-    def enviar_mensagem(self, texto):
-        """Envia mensagens para o adversário com o nome do jogador"""
+            self.socket.close()
 
+    def enviar_mensagem(self, texto):
+        """Envia mensagens para o adversário"""
         if self.conexao:
             try:
                 mensagem = {"nome": self.nome, "texto": texto}
@@ -76,3 +77,6 @@ class Conexao:
             except Exception as erro:
                 print(f"[ERRO] Falha ao receber mensagem: {erro}")
                 break
+
+        # Quando a thread for interrompida, fechamos a conexão
+        self.socket.close()
